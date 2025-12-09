@@ -1,0 +1,4 @@
+{
+  "name": "Kasparro Applied AI Content Gen",
+  "description": "A modular, agentic content generation system utilizing React, TypeScript, and rule-based automation to create structured JSON content pages from product data."
+}
