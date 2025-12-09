@@ -1,13 +1,40 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
 
-# Run and deploy your AI Studio app
+## Problem Statement
+The objective was to design and implement a modular agentic automation system that takes a specific small product dataset (GlowBoost Vitamin C Serum) and automatically generates structured, machine-readable content pages (FAQ Page, Product Description Page, Comparison Page). The system needed to operate without external LLM APIs, relying instead on deterministic rules, templates, and a multi-agent orchestration architecture within a React/Vite Single Page Application.
 
-This contains everything you need to run your app locally.
+## Solution Overview
+This solution is a client-side React application acting as a content generation pipeline. It simulates an "Agentic" workflow where specialized hooks (Agents) perform distinct tasks—parsing, generating ideas, assembling content, and rendering outputs. 
 
+The system treats the React component tree as the execution environment and `useEffect` hooks as the temporal orchestrators. It processes the raw JSON input through a DAG (Directed Acyclic Graph) of operations to produce three distinct JSON artifacts, downloadable directly from the browser.
 
-1. Install dependencies:
+## Scopes & Assumptions
+1.  **Tech Stack**: React 18, TypeScript, Tailwind CSS, Vite. No backend or external AI APIs.
+2.  **Input Data**: Strictly limited to the provided JSON object.
+3.  **Content Logic**: "Intelligent" behavior is simulated via string manipulation rules, conditional templates, and keyword matching.
+4.  **Product B**: As requested, the comparison product ("RadiantGlow Serum") is hardcoded within the system's logic to facilitate the comparison page generation.
+5.  **Persistence**: Files are generated in-memory as Blobs for download; the `public/outputs` folder structure is simulated via the download filenames.
+
+## System Design
+
+### 1. Agent Responsibilities
+The system is divided into functional units called "Agents", implemented as custom React Hooks to leverage state and lifecycle management.
+
+*   **DataParserAgent**: Acts as the gatekeeper. It validates the raw input schema and normalizes it into a strongly-typed `ProductModel`.
+*   **QuestionGeneratorAgent**: Responsible for creative ideation. It uses a template bank to deterministically generate exactly 15 questions across "Informational", "Usage", and "Safety" categories based on product attributes.
+*   **ContentAssemblerAgent**: The "worker bee". It calls specific *Logic Blocks* (see below) to generate the actual text content for answers, descriptions, and comparisons.
+*   **TemplateRendererAgent**: The formatter. It takes raw text/data fragments and structures them into the final JSON schemas required for the output pages.
+*   **JsonOutputAgent**: (Integrated into OutputDisplay) Handles the serialization and file download mechanisms.
+*   **OrchestratorAgent**: The generic manager. It runs the pipeline steps in sequence: Parse -> Generate Questions -> Assemble -> Render -> Display.
+
+### 2. Logic Blocks (The "Skills")
+Agents rely on granular, reusable functions called blocks:
+*   `useGenerateBenefitsBlock`: Expands comma-separated benefits into marketing copy.
+*   `useExtractUsageBlock`: Formats usage instructions with time-of-day advice.
+*   `useCompareIngredientsBlock`: Parses numeric concentrations to determine which product is stronger/milder.
+*   `useFormatPriceBlock`: Standardizes currency and tax info.
+*   `useSafetyWarningBlock`: Constructs warnings based on skin type and side effects.
+
+### 3. Install dependencies:
    `npm install`
-3. Run the app:
+### 4. Run the app:
    `npm run dev`
